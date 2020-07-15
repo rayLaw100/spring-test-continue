@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+
+<html>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <th> Car </th>
+                    <th> Brand </th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${cars.empty}">
+                    <td colspan="2"> No cars Available </td>
+                </tr>
+                <tr th:each="car : ${cars}">
+                    <td><span th:text="${car.name}"> Car </span></td>
+                    <td><span th:text="${car.brand}"> Brand </span></td>
+                </tr>
+            </tbody>
+        </table>
+           <!-- <form action="#" th:action="@{/car/{id}}" method="post">
+            <table>
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text" th:field="*{name}" /></td>
+                    <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
+                </tr>
+                
+                <tr>
+                    <td><button type="submit">Submit</button></td>
+                </tr>
+                
+            </table>
+        </form> -->
+
+    </body>
+</html>
