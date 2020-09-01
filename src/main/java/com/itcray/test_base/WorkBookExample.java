@@ -38,6 +38,7 @@ public class WorkBookExample {
 
     public static void main(String[] args) throws Exception {
 
+        // simple create / read & modify
         // try (
         // // 讀入檔案流
         // FileInputStream inputStream = new FileInputStream(new File(path));
@@ -58,8 +59,9 @@ public class WorkBookExample {
         // System.out.println("error: "+ e);
         // }
 
+        // create & write
         // XSSFWorkbook workbook = new XSSFWorkbook();
-        // XSSFSheet sheet = workbook.createSheet("Datatypes in Java");
+        // XSSFSheet sheet = workbook.createSheet("Dummy min form");
         // // Object[][] datatypes = {
         // // {"Datatype", "Type", "Size(in bytes)"},
         // // {"int", "Primitive", 2},
@@ -74,11 +76,10 @@ public class WorkBookExample {
         // dateCellStyle.setDataFormat(workbook.createDataFormat().getFormat("yyyy-MM-dd
         // HH:mm:ss"));
 
-        // Object[][] datatypes = {
-        // {"[SYSTEM]", "CLIENT:", "ABC"},
-        // {"[SYSTEM]", "CONTACT:", "3888888"},
-        // {"[SYSTEM]", "DATE:", dtf.format(now) }
-        // };
+        // Object[][] datatypes = { { "[SYSTEM]", "CLIENT:", "ABC", "Ada" }, {
+        // "[SYSTEM]", "CONTACT:", "+852", "3888888" },
+        // { "[SYSTEM]", "DATE:", dtf.format(now), "checking..." },{"[SYSTEM]",
+        // "Signature:"} };
 
         // int rowNum = 0;
         // System.out.println("Creating excel");
@@ -95,9 +96,12 @@ public class WorkBookExample {
         // }
         // }
         // }
-
+        // for (short i = sheet.getRow(0).getFirstCellNum(), end =
+        // sheet.getRow(0).getLastCellNum(); i < end; i++) {
+        // sheet.autoSizeColumn(i);
+        // }
         // try {
-        // FileOutputStream outputStream = new FileOutputStream(path);
+        // FileOutputStream outputStream = new FileOutputStream(export);
         // workbook.write(outputStream);
         // workbook.close();
         // } catch (FileNotFoundException e) {
@@ -108,6 +112,7 @@ public class WorkBookExample {
 
         // System.out.println("Done");
 
+        // read from excel file & sys. print
         try (FileInputStream file = new FileInputStream(new File(path));
 
                 // Create Workbook instance holding reference to .xlsx file
@@ -125,41 +130,37 @@ public class WorkBookExample {
                 Row row = rowIterator.next();
                 // For each row, iterate through all the columns
                 Iterator<Cell> cellIterator = row.cellIterator();
-                int col = 0; //check the colume number
+
+                int col = 0; // check the colume number
+
                 while (cellIterator.hasNext()) {
                     Cell cell = cellIterator.next();
-                    if (col >= 12) {
-                        // skip the self-note columns
+
+                    if (cell.getRowIndex() != 12 && col >= 12) {
+                        // skip the self-note columns except table header
                         break;
                     } else {
 
                         switch (cell.getCellType()) {
 
                             case NUMERIC:
-                                // System.out.print(formatter.formatCellValue(cell) + "\t");
-                                System.out.print(formatter.formatCellValue(cell) + "; ");
+                                System.out.print(formatter.formatCellValue(cell) + "\t");
                                 break;
                             case STRING:
-                                // System.out.print(cell.getStringCellValue() + "\t");
                                 if (cell.getStringCellValue().contains("[GROUP]")) {
                                     groupNo++;
                                 }
-                                System.out.print(cell.getStringCellValue() + "; ");
+                                System.out.print(cell.getStringCellValue() + "\t");
                                 break;
                             case BOOLEAN:
-                                System.out.print(String.valueOf(cell.getBooleanCellValue()) + "; ");
+                                System.out.print(String.valueOf(cell.getBooleanCellValue()) + "\t");
                                 break;
                             case FORMULA:
-                                // System.out.print(String.valueOf(cell.getCellFormula()));
-                                if (cell.getCachedFormulaResultType() == CellType.STRING) {
-                                    System.out.print(cell.getRichStringCellValue() + "; ");
-                                    break;
-                                }
                                 if (cell.getCachedFormulaResultType() == CellType.NUMERIC) {
                                     // System.out.print(String.valueOf(cell.getNumericCellValue( ))+ "; ");
                                     System.out.print(String.valueOf(
                                             formatter.formatRawCellContents(cell.getNumericCellValue(), -1, "#,##0")
-                                                    + "; "));
+                                                    + "\t"));
                                     break;
                                 }
                                 break;
@@ -167,8 +168,10 @@ public class WorkBookExample {
                                 System.out.print("\t");
                                 break;
                         }
-                        col++;
+
+                        col++; // count the column
                     }
+
                     // Check the cell type and format accordingly
                 }
                 System.out.println("\n");
